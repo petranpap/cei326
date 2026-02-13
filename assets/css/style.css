@@ -1,0 +1,20 @@
+.primary { color: #1f6feb }
+.btn-primary { 
+    background: #1f6feb; 
+    color: white; 
+    padding: 10px 14px; 
+    border: none; 
+}
+
+
+p { color: blue; }
+.box p { color: red; }
+.box h1 {color: green !important;}
+
+
+.card {
+    max-width: 40px;
+  border: 2px solid #333;
+  padding: 20px;   /* space inside */
+  margin: 20px;    /* space outside */
+}
