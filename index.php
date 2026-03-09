@@ -1,34 +1,67 @@
-<?php 
+<?php
+session_start();
+require_once 'includes/db.php';
+$error = ''; $email = '';
+ 
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $email    = trim($_POST['email']    ?? '');
+    $password =      $_POST['password'] ?? '';
 
-require_once "includes/header.php";
+ 
+    $stmt = $pdo->prepare('SELECT * FROM users WHERE email = :email');
+    $stmt->execute([':email' => $email]);
+    $user = $stmt->fetch();
+ 
+    if ($user && password_verify($password, $user['password_hash'])) {
+        $_SESSION['user_id']  = $user['id'];
+        $_SESSION['role']     = $user['role'];
+        $_SESSION['username'] = $user['username'];
+        echo "Login successful. Welcome, " . htmlspecialchars($user['username']) . "!";
+        header('Location: modules/'.$user['role'].'/dashboard.php');
+        exit;
+    } else {
+        $error = 'Λανθασμένα στοιχεία σύνδεσης.';
+        echo $error;
+        $hash = password_hash($password, PASSWORD_DEFAULT);
+        echo "<br> Password hash: $hash <br>";
+        echo $user['password_hash'];
+
+    }
+}else{
 
 ?>
-<body>
+<?php
+require_once "includes/header.php";
+?>
 
+<body>
+<!-- ===== HEADER ===== -->
 <div class="container-fluid p-5 bg-primary text-white text-center">
-  <h1>My First Bootstrap Page</h1>
-  <p><?php echo "Welcome to the main page!"; ?></p> 
-</div>
-  
-<div class="container mt-5">
-  <div class="row">
-    <div class="col-sm-4">
-      <h3><a href="modules/admin/index.php">Admin Module</a></h3>
-      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit...</p>
-      <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris...</p>
+    <h1>Login</h1>
+</div>    
+
+<h1 class="container mt-5">Login</h1>
+<form class="container mt-3" action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST">
+
+    <div class="form-group">
+        <label for="name2">Email:</label>
+        <input type="email" class="form-control" id="email" placeholder="Enter email" name="email">
     </div>
-    <div class="col-sm-4">
-      <h3>Search Module</h3>
-      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit...</p>
-      <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris...</p>
+
+    <div class="form-group">
+        <label for="email2">Password:</label>
+        <input type="password" class="form-control" id="password" placeholder="Enter password" name="password">
     </div>
-    <div class="col-sm-4">
-      <h3>Submit Module</h3>        
-      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit...</p>
-      <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris...</p>
-    </div>
-  </div>
-</div>
+
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+
+<a href="register.php" class="container mt-3">Don't have an account? Register here.</a>
 
 </body>
 </html>
+
+<?php
+} // τέλος else — κλείνουμε το PHP block που άνοιξε πριν την HTML
+?>
+
