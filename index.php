@@ -16,7 +16,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION['user_id']  = $user['id'];
         $_SESSION['role']     = $user['role'];
         $_SESSION['username'] = $user['username'];
-        echo "Login successful. Welcome, " . htmlspecialchars($user['username']) . "!";
+        $_SESSION['email']    = $user['email'];
+        $_SESSION['flash_message'] = 'Login successful. Welcome, ' . htmlspecialchars($user['username']) . '!';
         header('Location: modules/'.$user['role'].'/dashboard.php');
         exit;
     } else {
