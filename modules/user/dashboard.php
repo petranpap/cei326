@@ -22,6 +22,7 @@ if (!isset($_SESSION['user_id'])) {
 </div>
 <div class="container mt-5">
     <h2> <?php echo $_SESSION['flash_message'] ?? ''; ?></h2>
+    <p><?php echo $_SESSION['user_id'] ?? ''; ?></p>
     <?php unset($_SESSION['flash_message']); ?>
 
     <?php 
